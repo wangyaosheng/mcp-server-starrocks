@@ -31,6 +31,7 @@ mcp_transport = os.getenv('MCP_TRANSPORT_MODE', 'stdio')
 
 def get_connection():
     global global_connection, default_database
+    default_database= 'test_database'
     if global_connection is None:
         connection_params = {
             'host': os.getenv('STARROCKS_HOST', 'localhost'),
@@ -288,7 +289,7 @@ def write_query(query: Annotated[str, Field(description="SQL to execute")]) -> s
     finally:
         if cursor:
             cursor.close()
-
+# TODO: 这里与EXPLAIN ANALYZE有冲突，可能需要重构
 def analyze_query(uuid: Annotated[str, Field(description="Query ID, a string composed of 32 hexadecimal digits formatted as 8-4-4-4-12")], sql: Annotated[str, Field(description="Query SQL")]) -> str:
     if uuid:
         return read_query(f"ANALYZE PROFILE FROM '{uuid}'")
